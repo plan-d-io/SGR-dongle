@@ -115,7 +115,8 @@ void checkConnection(){
       if(ha_en && !ha_metercreated)haAutoDiscovery(true);
       else if(ha_en && ha_metercreated){
         haAutoDiscovery(false);
-        initRegistries(true);
+        initMqttValues();
+        if(data_altherma) initRegistries(false);
       }
       initMqttValues();
     }

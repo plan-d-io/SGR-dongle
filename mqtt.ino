@@ -210,7 +210,7 @@ void haAutoDiscovery(boolean eraseMeter){
       //Ensure devices are erased before created again
       if(eraseMeter){
         if(chanName.length() > 0) pubMqtt(configTopic, jsonOutput, true);
-        delay(100);
+        delay(1000);
       }
       serializeJson(doc, jsonOutput);
       if(chanName.length() > 0) {
@@ -242,6 +242,9 @@ void haAutoDiscovery(boolean eraseMeter){
         doc["state_topic"] = "data/devices/heatpump/enable_sgr_control";
         doc["payload_on"] = "{\"value\": \"on\"}";
         doc["payload_off"] = "{\"value\": \"off\"}";
+        doc["state_on"] = "on";
+        doc["state_off"] = "off";
+        doc["value_template"] = "{{ value_json.value }}";
         doc["command_topic"] = "set/devices/heatpump/enable_sgr_control";
         configTopic = "homeassistant/switch/" + chanName + "/config";
       }
@@ -251,7 +254,7 @@ void haAutoDiscovery(boolean eraseMeter){
         doc["state_topic"] = "data/devices/heatpump/sgr_chan_1";
         doc["payload_on"] = "{\"value\": \"on\"}";
         doc["payload_off"] = "{\"value\": \"off\"}";
-        doc["command_topic"] = "set/devices/heatpump/sgr_chan_1";
+        doc["command_topic"] = sgr_chan1_topic;
         configTopic = "homeassistant/switch/" + chanName + "/config";
       }
       else if(i == 3){
@@ -260,7 +263,7 @@ void haAutoDiscovery(boolean eraseMeter){
         doc["state_topic"] = "data/devices/heatpump/sgr_chan_2";
         doc["payload_on"] = "{\"value\": \"on\"}";
         doc["payload_off"] = "{\"value\": \"off\"}";
-        doc["command_topic"] = "set/devices/heatpump/sgr_chan_2";
+        doc["command_topic"] = sgr_chan2_topic;
         configTopic = "homeassistant/switch/" + chanName + "/config";
       }
       else{
@@ -285,6 +288,7 @@ void haAutoDiscovery(boolean eraseMeter){
       serializeJson(doc, jsonOutput);
       if(chanName.length() > 0){
         pubMqtt(configTopic, jsonOutput, true);
+        //Serial.println(configTopic);
         if(eraseMeter) delay(100);
       }
     }
@@ -416,9 +420,9 @@ void initMqttValues(){
 void processCallback() {
   time_t now;
   unsigned long dtimestamp = time(&now);
-  Serial.print("got mqtt message on ");
-  Serial.println(mqttTopic);
-  Serial.println(mqttPayload);
+  //Serial.print("got mqtt message on ");
+  //Serial.println(mqttTopic);
+  //Serial.println(mqttPayload);
   if (mqttTopic == "set/devices/heatpump/reboot") {
     StaticJsonDocument<200> doc;
     deserializeJson(doc, mqttPayload);
@@ -460,7 +464,6 @@ void processCallback() {
     pubMqtt("data/devices/heatpump/enable_sgr_control", reply, false);
   }
   if (mqttTopic == sgr_allow_topic) {
-    Serial.println("Received allow");
     StaticJsonDocument<200> doc;
     deserializeJson(doc, mqttPayload);
     String reply = "{\"value\": \"";
@@ -478,7 +481,6 @@ void processCallback() {
     pubMqtt("data/devices/heatpump/allow_sgr_control", reply, false);
   }
   if (mqttTopic == sgr_post_topic) {
-    Serial.println("SGR post ");
     StaticJsonDocument<200> doc;
     deserializeJson(doc, mqttPayload);
     sgr_post = int(doc["value"]);

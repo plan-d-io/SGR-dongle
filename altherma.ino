@@ -141,7 +141,7 @@ void initRegistries(boolean eraseMeter){
   {
     if (!contains(registryIDs, sizeof(registryIDs), label.registryID))
     {
-      Serial.printf("Adding registry 0x%2x to be queried.\n", label.registryID);
+      if (eraseMeter) Serial.printf("Adding registry 0x%2x to be queried.\n", label.registryID);
       /*Perform HA autodisovery
        * if MQTT is enabled
        */
