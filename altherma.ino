@@ -369,7 +369,7 @@ void initRegistries(boolean eraseMeter){
         serializeJson(doc, jsonOutput);
         if(chanName.length() > 0){
           pubMqtt(configTopic, jsonOutput, true);
-          if(eraseMeter) delay(100);
+          if(eraseMeter) delay(100); //initial HA discovery sometimes fails if sensors are created too quickly
           //Serial.println(configTopic);
           //Serial.println(jsonOutput);
         }
