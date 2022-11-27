@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang=\“en\“ class="">
+<head>
+	<link rel="stylesheet" href="style.css">
+	<meta charset='utf-8'><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+	<title>SGR dongle - Main Menu</title>
+</head>
+<script src="scripts.js"></script>
+<script>
+setInterval(function() {
+  // Call a function repetatively with 0.5 Second interval
+  getJsonData("indexData");
+}, 1000); //500mSeconds update rate
+setTimeout(function() {
+  getInfoMessage();
+}, 200); //500mSeconds update rate
+
+</script>
+
+<body onload="getStaticData()">
+	<div style='text-align:left;display:inline-block;color:#eaeaea;min-width:340px;'>
+		<div style='text-align:center;color:#eaeaea;'>
+			<noscript>To use the SGR dongle, please enable JavaScript<br></noscript>
+			<h2>SGR dongle</h2>
+			<h3>Rebooting</h3>
+		</div>
+          <div class="loader"></div> 
+		 <div style='text-align:center;font-size:14px;'></br>The SGR dongle is rebooting.</br> You can close this window.</br></div>
+		<div style='text-align:right;font-size:11px;'><hr/><a id="footer" href='https://plan-d.io' target='_blank' style='color:#aaa;'>SGR dongle by plan-d.io</a></div>
+	</div>
+</body>
+</html>

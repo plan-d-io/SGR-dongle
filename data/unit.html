@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang=\“en\“ class="">
+<head>
+	<link rel="stylesheet" href="style.css">
+	<meta charset='utf-8'><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+	<title>SGR heat pump dongle - Configure unit</title>
+</head>
+<script src="scripts.js"></script>
+<script>
+function start(){
+    getJsonData('unitData');
+    getStaticData();
+}
+setTimeout(function() {
+  getSaveState();
+}, 200); //200mSeconds update rate
+</script>
+
+<body onload="start()">
+	<div style='text-align:left;display:inline-block;color:#eaeaea;min-width:340px;'>
+		<div style='text-align:center;color:#eaeaea;'>
+			<noscript>To use the SGR heat pump dongle, please enable JavaScript<br></noscript>
+			<h2>SGR heat pump dongle</h2>
+			<h3><span id="HostValue">STATE</span></h3>
+			<h3><span id="InfoMessage" style='text-align:center;color:red;' ></span></h3>
+			<h3>Dongle configuration</h3>
+		</div>
+		<p><form method="get" action="setunit">
+		<h4>Dongle configuration</h4>
+		<p>Dongle type:</p>
+		<p style="vertical-align: middle;"><select id="dongle_type" name="dongle_type"><option value="OEM" selected>OEM</option><option value="Plan-D">Plan-D</option></select></p>
+		<label><input name ="external_temperature" type="checkbox" id="external_temperature" value = "true" />Use external temperature sensor</label>
+		<h4>Smart Grid Ready configuration</h4>
+		<p>MQTT topic of SGR mode:</p>
+		<p style="vertical-align: middle;"><input name="sgr_topic" type="text" id="sgr_topic"/></p>
+		<p>SGR polarity:</p>
+		<p style="vertical-align: middle;"><select id="sgr_pol" name="sgr_pol"><option value="Normal" selected>Normal</option><option value="Inverted">Inverted</option></select></p>
+		<p>Rate limit of SGR state changes:</p>
+		<p style="vertical-align: middle;"><input name="sgr_lim" type="number" id="sgr_lim"/></p>
+		<h4>Injection meter emulation</h4>
+		<label><input name ="em_en" type="checkbox" id="em_en" value = "true" />Emulate injection meter</label>
+		<p>MQTT topic of injection volume:</p>
+		<p style="vertical-align: middle;"><input name="em_topic" type="text" id="em_topic"/></p>
+		<label><input name ="em_cofy" type="checkbox" id="em_cofy" value = "true" />Use COFY payload format</label>
+		<p>Unit of power:</p>
+		<p style="vertical-align: middle;"><select id="em_unit" name="em_unit"><option value="kW" selected>kW</option><option value="W">W</option></select></p>
+		<p>Pulses/kWh:</p>
+		<p style="vertical-align: middle;"><input name="em_pulses" type="number" id="em_pulses"/></p>
+		<label><input name ="em_pol" type="checkbox" id="em_pol" value = "true" />Inverse pulse polarity</label>
+		<p>Min ON pulse width (ms):</p>
+		<p style="vertical-align: middle;"><input name="em_pwon" type="number" id="em_pwon"/></p>
+		<p>Min OFF pulse width (ms):</p>
+		<p style="vertical-align: middle;"><input name="em_pwoff" type="number" id="em_pwoff"/></p>
+		<h4>Digital outputs</h4>
+		<label><input name ="sgr_dir" type="checkbox" id="sgr_dir" value = "true" />Allow direct control of relay outputs</label>
+		<h4>Heatpump data connection</h4>
+		<label><input name ="data_altherma" type="checkbox" id="data_altherma" value = "true" />Activate esp-altherma integration</label>
+		<p><input type="submit" class='button bgrn'></form></p>
+		<p><div  style='text-align:center;color:green;' id = "SaveMessage" class="save"><h3></h3></div></p>
+		<p><div></div></p>
+		<p><form action='/config' method='get'><button>Configuration</button></form></p>
+		<p><form action='/' method='get'><button>Main menu</button></form></p>
+		<p><div></div></p>
+		<p><form action='.' method='get' onsubmit='return confirm("Confirm Restart");'><button name='rst' class='button bred'>Reset configuration</button></form></p>
+		<div style='text-align:right;font-size:11px;'><hr/><a href='https://plan-d.io' target='_blank' style='color:#aaa;'>SGR heat pump dongle by plan-d.io</a></div>
+	</div>
+</body>
+</html>
