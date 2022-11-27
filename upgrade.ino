@@ -57,7 +57,7 @@ boolean startUpdate(){
       if(bundleLoaded){
         //String baseUrl = "https://raw.githubusercontent.com/plan-d-io/SGR-dongle/main";
         //String fileUrl = baseUrl + "/bin/SGR-dongle-V" + String(onlineVersion/100.0) +"ino.bin";
-        String baseUrl ="https://raw.githubusercontent.com/plan-d-io/SGR-dongle/main/bin/SGR-dongle.ino.bin";
+        String fileUrl ="https://raw.githubusercontent.com/plan-d-io/SGR-dongle/main/bin/SGR-dongle.ino.bin";
         //String fileUrl = baseUrl + String(onlineVersion/100.0) +".ino.bin";
         syslog("Getting new firmware over HTTPS/TLS", 0);
         syslog("Found new firmware at "+ fileUrl, 0);
