@@ -11,7 +11,7 @@ void WebRequestHandler::handleRequest(AsyncWebServerRequest *request)
   extern int counter, mqtt_port, powerMultiplier, pulseMultiplier, sgr_lim;
   extern unsigned long upload_throttle, pulseOnWidth, pulseOffWidth;;
   extern char apSSID[];
-  extern boolean wifiError, mqttHostError, mqttClientError, httpsError, wifiSTA, wifiSave, configSaved, rebootReq, rebootInit, mqttSave, mqtt_en, mqtt_auth, mqtt_tls, updateAvailable, update_start, mTimeFound, meterError, eid_en, eidSave, eidError, ha_en, haSave, em_en, emSave, em_cofy, pulseInversePolarity, data_altherma, external_temperature;
+  extern boolean wifiError, mqttHostError, mqttClientError, httpsError, wifiSTA, wifiSave, configSaved, rebootReq, rebootInit, mqttSave, mqtt_en, mqtt_auth, mqtt_tls, updateAvailable, update_start, mTimeFound, meterError, eid_en, eidSave, eidError, ha_en, haSave, em_en, emSave, em_cofy, pulseInversePolarity, data_altherma, sgr_dir, external_temperature;
   if(request->url() == "/"){
     counter++;
     request->send(SPIFFS, "/index.html", "text/html");
@@ -273,6 +273,11 @@ void WebRequestHandler::handleRequest(AsyncWebServerRequest *request)
       if(p->value() == "true") data_altherma = true;
     }
     else data_altherma = false;
+    if(request->hasParam("sgr_dir")){
+      AsyncWebParameter* p = request->getParam("sgr_dir");
+      if(p->value() == "true") sgr_dir = true;
+    }
+    else sgr_dir = false;
     if(request->hasParam("external_temperature")){
       AsyncWebParameter* p = request->getParam("external_temperature");
       if(p->value() == "true") external_temperature = true;

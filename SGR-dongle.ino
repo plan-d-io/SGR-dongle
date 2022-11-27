@@ -26,7 +26,7 @@
 //
 
 //
-unsigned int fw_ver = 103;
+unsigned int fw_ver = 104;
 unsigned int onlineVersion, fw_new;
 DNSServer dnsServer;
 AsyncWebServer server(80);
@@ -350,12 +350,16 @@ void loop(){
               //Normal operation
               syslog("SGR mode set to " + String(sgrMode) +": Normal operation", 0);
               if(dongle_type == "Plan-D"){
-                digitalWrite(19, LOW);
-                digitalWrite(22, LOW);
+                setSGRchan(1, 19, 0);
+                setSGRchan(2, 22, 0);
+                //digitalWrite(19, LOW);
+                //digitalWrite(22, LOW);
               }
               else{
-                digitalWrite(32, LOW);
-                digitalWrite(26, LOW);
+                setSGRchan(1, 32, 0);
+                setSGRchan(2, 26, 0);
+                //digitalWrite(32, LOW);
+                //digitalWrite(26, LOW);
               }
               reply += "Normal operation";
             }
@@ -363,12 +367,16 @@ void loop(){
               //Advise on
               syslog("SGR mode set to " + String(sgrMode) +": Advise on", 0);
               if(dongle_type == "Plan-D"){
-                digitalWrite(19, HIGH);
-                digitalWrite(22, LOW);
+                setSGRchan(1, 19, 1);
+                setSGRchan(2, 22, 0);
+                //digitalWrite(19, HIGH);
+                //digitalWrite(22, LOW);
               }
               else{
-                digitalWrite(32, HIGH);
-                digitalWrite(26, LOW);
+                setSGRchan(1, 32, 1);
+                setSGRchan(2, 26, 0);
+                //digitalWrite(32, HIGH);
+                //digitalWrite(26, LOW);
               }
               reply += "Advise on";
             }
@@ -376,12 +384,16 @@ void loop(){
               //Block
               syslog("SGR mode set to " + String(sgrMode) +": Block", 0);
               if(dongle_type == "Plan-D"){
-                digitalWrite(19, LOW);
-                digitalWrite(22, HIGH);
+                setSGRchan(1, 19, 0);
+                setSGRchan(2, 22, 1);
+                //digitalWrite(19, LOW);
+                //digitalWrite(22, HIGH);
               }
               else{
-                digitalWrite(32, LOW);
-                digitalWrite(26, HIGH);
+                setSGRchan(1, 32, 0);
+                setSGRchan(2, 26, 1);
+                //digitalWrite(32, LOW);
+                //digitalWrite(26, HIGH);
               }
               reply += "Block";
             }
@@ -389,24 +401,32 @@ void loop(){
               //Must run
               syslog("SGR mode set to " + String(sgrMode) +": Forced on", 0);
               if(dongle_type == "Plan-D"){
-                digitalWrite(19, HIGH);
-                digitalWrite(22, HIGH);
+                setSGRchan(1, 19, 1);
+                setSGRchan(2, 22, 1);
+                //digitalWrite(19, HIGH);
+                //digitalWrite(22, HIGH);
               }
               else{
-                digitalWrite(32, HIGH);
-                digitalWrite(26, HIGH);
+                setSGRchan(1, 32, 1);
+                setSGRchan(2, 26, 1);
+                //digitalWrite(32, HIGH);
+                //digitalWrite(26, HIGH);
               }
               reply += "Forced on";
             }
             else{
               syslog("SGR mode set to " + String(sgrMode) +": Normal operation", 0);
               if(dongle_type == "Plan-D"){
-                digitalWrite(19, LOW);
-                digitalWrite(22, LOW);
+                setSGRchan(1, 19, 0);
+                setSGRchan(2, 22, 0);
+                //digitalWrite(19, LOW);
+                //digitalWrite(22, LOW);
               }
               else{
-                digitalWrite(32, LOW);
-                digitalWrite(26, LOW);
+                setSGRchan(1, 32, 0);
+                setSGRchan(2, 26, 0);
+                //digitalWrite(32, LOW);
+                //digitalWrite(26, LOW);
               }
               reply += "Normal operation";
             }
@@ -436,22 +456,26 @@ void loop(){
       String reply = "{\"value\": \"";
       if(sgr_chan1 == true){
         if(dongle_type == "Plan-D"){
-          digitalWrite(19, HIGH);
+          setSGRchan(1, 19, 1);
+          //digitalWrite(19, HIGH);
         }
         else{
-          digitalWrite(32, HIGH);
+          setSGRchan(1, 32, 1);
+          //digitalWrite(32, HIGH);
         }
-        syslog("SGR channel 1 manually set to ON", 0);
+        syslog("SGR channel 1 set to ON", 0);
         reply += "on";
       }
       else{
         if(dongle_type == "Plan-D"){
-          digitalWrite(19, LOW);
+          setSGRchan(1, 19, 0);
+          //digitalWrite(19, LOW);
         }
         else{
-          digitalWrite(32, LOW);
+          setSGRchan(1, 32, 0);
+          //digitalWrite(32, LOW);
         }
-        syslog("SGR channel 1 manually set to OFF", 0);
+        syslog("SGR channel 1 set to OFF", 0);
         reply += "off";
       }
       reply += "\"}";
@@ -472,7 +496,7 @@ void loop(){
         else{
           digitalWrite(26, HIGH);
         }
-        syslog("SGR channel 2 manually set to ON", 0);
+        syslog("SGR channel 2 set to ON", 0);
         reply += "on";
       }
       else{
@@ -482,7 +506,7 @@ void loop(){
         else{
           digitalWrite(26, LOW);
         }
-        syslog("SGR channel 2 manually set to OFF", 0);
+        syslog("SGR channel 2 set to OFF", 0);
         reply += "off";
       }
       reply += "\"}";
@@ -493,6 +517,7 @@ void loop(){
     }
     sgr_chan2_prev = sgr_chan2;
   }
+    
   /*If energy meter emulation is enabled, emulate meter pulses*/
   if(em_en){
     //this needs to move into interrupts
@@ -569,5 +594,30 @@ void loop(){
       waiter = 0;
     }
   }
+}
 
+void setSGRchan(int sgrChan, int pinNumber, int sgrValue){
+  /*Serial.print("Received command ");
+  Serial.print(sgrValue);
+  Serial.print(" for chan ");
+  Serial.print(sgrChan);
+  Serial.print(" on pin ");
+  Serial.println(pinNumber);*/
+  digitalWrite(pinNumber, sgrValue);
+  if(sgrChan == 1){
+    if (sgrValue == 1) sgr_chan1 = true;
+    else sgr_chan1 = false;
+  }
+  else if(sgrChan == 2){
+    if (sgrValue == 1) sgr_chan2 = true;
+    else sgr_chan2 = false;
+  }
+  String reply = "{\"value\": \"";
+  if(sgrValue == 1) reply += "on";
+  else reply += "off";
+  reply += "\"}";
+  String topic = "data/devices/heatpump/";
+  if(sgrChan == 1) topic += "sgr_chan_1";
+  else topic += "sgr_chan_2";
+  pubMqtt(topic, reply, false);
 }
