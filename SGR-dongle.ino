@@ -26,7 +26,7 @@
 //
 
 //
-unsigned int fw_ver = 104;
+unsigned int fw_ver = 105;
 unsigned int onlineVersion, fw_new;
 DNSServer dnsServer;
 AsyncWebServer server(80);
@@ -166,6 +166,8 @@ void setup(){
   syslog("Last reset reason: " + resetReason, 1);
   syslog("Last reset reason (verbose): " + last_reset_verbose, 1);
   debugInfo = true;
+  data_altherma = true;
+  external_temperature = true;
   delay(100);
   //your other setup stuff...
   if(wifiSTA){
@@ -274,7 +276,9 @@ void loop(){
   else{
     if(update_autoCheck && sinceUpdateCheck >= 86400000){
       updateAvailable = checkUpdate();
-      if(updateAvailable) startUpdate();
+      if(updateAvailable){
+        if(saveConfig()) startUpdate();
+      }
       sinceUpdateCheck = 0;
     }
     if(sinceClockCheck >= 3600){
